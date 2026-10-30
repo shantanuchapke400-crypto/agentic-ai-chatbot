@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic AI Chatbot</title>
+
+<style>
+:root {
+    --bg: #111214;
+    --panel: #1d1f23;
+    --side: #222429;
+    --surface: #292b31;
+    --border: #30323a;
+    --text: #f2f3f7;
+    --muted: #969ba9;
+    --blue: #3569ff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+button, textarea, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* MAIN LAYOUT */
+
+.app {
+    display: grid;
+    grid-template-columns: 235px minmax(0, 1fr) 250px;
+    height: 100vh;
+    padding: 12px;
+    gap: 10px;
+}
+
+.sidebar, .main, .tools {
+    min-height: 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+}
+
+/* LEFT SIDEBAR */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 17px 13px;
+    overflow: hidden;
+    background: var(--side);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    margin-bottom: 26px;
+}
+
+.logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #4169ff, #8955ff);
+    font-size: 20px;
+}
+
+.new {
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-radius: 10px;
+    color: white;
+    background: var(--blue);
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 23px;
+}
+
+.new:hover, .send:hover {
+    filter: brightness(1.12);
+}
+
+.section {
+    color: #777d8c;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 10px 0;
+}
+
+.nav, .conv {
+    padding: 10px;
+    border-radius: 9px;
+    color: #c0c4d0;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.nav:hover, .conv:hover {
+    background: #30333b;
+}
+
+.history {
+    overflow: auto;
+    min-height: 60px;
+}
+
+.conv {
+    display: flex;
+    gap: 9px;
+    font-size: 12px;
+}
+
+.conv span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile {
+    margin-top: auto;
+    padding: 16px 8px 5px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: #cbd0dd;
+}
+
+/* CENTER CHAT */
+
+.main {
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    overflow: hidden;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.heading {
+    font-size: 19px;
+    font-weight: 650;
+}
+
+.sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.iconbtn {
+    height: 38px;
+    min-width: 40px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: var(--surface);
+    color: #cbd0dc;
+}
+
+.chat {
+    flex: 1;
+    overflow: auto;
+    padding: 5px 4px 15px;
+    min-height: 0;
+}
+
+/* WELCOME SCREEN */
+
+.welcome {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 22px 5px;
+}
+
+.hero {
+    text-align: center;
+    padding: 30px 15px 22px;
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at 80% 0%, #00b9e955, transparent 45%),
+        radial-gradient(circle at 10% 30%, #a45bff88, transparent 55%),
+        linear-gradient(130deg, #202e78, #111b40 75%);
+    border: 1px solid #5669d655;
+}
+
+.heroicon {
+    width: 65px;
+    height: 65px;
+    border: 2px solid #a7b7ff;
+    border-radius: 18px;
+    margin: 0 auto 15px;
+    display: grid;
+    place-items: center;
+    font-size: 32px;
+    background: #4567ff;
+}
+
+.hero h1 {
+    font-size: 25px;
+    margin: 8px 0;
+}
+
+.hero p {
+    color: #c2c9e6;
+    line-height: 1.6;
+    max-width: 560px;
+    margin: auto;
+    font-size: 14px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 9px;
+    margin-top: 12px;
+}
+
+.card {
+    background: #25272d;
+    border: 1px solid #343640;
+    border-radius: 13px;
+    padding: 15px;
+    text-align: left;
+    color: var(--text);
+    min-height: 105px;
+}
+
+.card:hover {
+    border-color: #536fff;
+    background: #2c3040;
+}
+
+.card b {
+    display: block;
+    font-size: 13px;
+    margin: 8px 0 6px;
+}
+
+.card span {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* CHAT MESSAGES */
+
+.message {
+    display: flex;
+    gap: 12px;
+    margin: 18px 3px;
+    align-items: flex-start;
+}
+
+.bubbleicon {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: #303d79;
+}
+
+.message.user .bubbleicon {
+    background: #34363d;
+}
+
+.content {
+    max-width: 900px;
+    min-width: 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #25272d;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.message.user .content {
+    background: #30384f;
+}
+
+.role {
+    color: #aab1c2;
+    font-size: 11px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+/* MESSAGE COMPOSER */
+
+.composer {
+    flex-shrink: 0;
+    padding: 10px;
+    background: #25272d;
+    border: 1px solid #383b45;
+    border-radius: 15px;
+}
+
+.notice {
+    display: none;
+    padding: 8px 10px;
+    background: #263e85;
+    border-radius: 7px;
+    color: #e6ebff;
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+.notice.show {
+    display: block;
+}
+
+.composer textarea {
+    display: block;
+    width: 100%;
+    min-height: 55px;
+    max-height: 150px;
+    resize: vertical;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: white;
+    padding: 8px 4px;
+    font-size: 14px;
+}
+
+.composer textarea::placeholder {
+    color: #9298a7;
+}
+
+.bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.attach {
+    border: 0;
+    color: #aeb5c5;
+    background: transparent;
+    padding: 7px;
+    font-size: 19px;
+}
+
+.model {
+    max-width: 245px;
+    border: 1px solid #3b3e49;
+    border-radius: 9px;
+    padding: 9px;
+    background: #30323a;
+    color: white;
+    font-size: 12px;
+    outline: 0;
+}
+
+.send {
+    width: 43px;
+    height: 43px;
+    border: 0;
+    border-radius: 50%;
+    color: white;
+    background: var(--blue);
+    font-size: 21px;
+}
+
+.send:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* RIGHT TOOLS PANEL */
+
+.tools {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 14px 12px;
+    background: var(--side);
+}
+
+.toolhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 650;
+    margin-bottom: 14px;
+}
+
+.tabs {
+    display: flex;
+    padding: 4px;
+    border-radius: 20px;
+    background: #30323a;
+    margin-bottom: 18px;
+}
+
+.tab {
+    flex: 1;
+    border: 0;
+    border-radius: 18px;
+    padding: 8px;
+    color: #aeb3c1;
+    background: transparent;
+    font-size: 12px;
+}
+
+.tab.active {
+    background: #202228;
+    color: white;
+}
+
+.toolitem {
+    display: flex;
+    gap: 10px;
+    padding: 10px 2px;
+    border-bottom: 1px solid #30323a;
+}
+
+.toolicon {
+    color: #5485ff;
+}
+
+.toolname {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.desc {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 4px;
+}
+
+.filesview {
+    display: none;
+}
+
+.filesview.show {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+.fileentry {
+    font-size: 11px;
+    color: #cbd0dd;
+    padding: 9px 4px;
+    border-bottom: 1px solid var(--border);
+    overflow-wrap: anywhere;
+}
+
+.panelhidden {
+    display: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1050px) {
+    .app {
+        grid-template-columns: 205px minmax(0, 1fr) 230px;
+    }
+
+    .tools {
+        display: flex;
+    }
+}
+
+@media (max-width: 760px) {
+    .app {
+        grid-template-columns: 190px minmax(0, 1fr);
+    }
+
+    .tools {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .app {
+        display: block;
+        padding: 0;
+    }
+
+    .sidebar, .tools {
+        display: none;
+    }
+
+    .main {
+        height: 100vh;
+        border: 0;
+        border-radius: 0;
+        padding: 12px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero h1 {
+        font-size: 21px;
+    }
+
+    .model {
+        max-width: 180px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<!-- LEFT SIDEBAR -->
+<aside class="sidebar">
+    <div class="brand">
+        <div class="logo">✦</div>
+        <span>Agentic AI</span>
+    </div>
+
+    <button class="new" id="newChat">＋ &nbsp; New chat</button>
+
+    <div class="section">Workspace</div>
+    <div class="nav" id="newNav">✧ &nbsp; New conversation</div>
+    <div class="nav" id="showTools">⚙ &nbsp; Agent tools</div>
+
+    <div class="section">Recent conversations</div>
+    <div class="history" id="history">Loading conversations...</div>
+
+    <div class="profile">
+        ◉ &nbsp; <b>Agentic AI Chatbot</b><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; Gemini-powered assistant
+    </div>
+</aside>
+
+<!-- MAIN CHAT -->
+<main class="main">
+
+<header class="top">
+    <div>
+        <div class="heading">Chat with AI</div>
+        <div class="sub">A smarter way to think, create and explore ideas.</div>
+    </div>
+
+    <div>
+        <button class="iconbtn" id="topNew">＋</button>
+        <button class="iconbtn" id="refresh">↻</button>
+    </div>
+</header>
+
+<section class="chat" id="chat">
+
+<div class="welcome" id="welcome">
+
+    <div class="hero">
+        <div class="heroicon">✦</div>
+        <h1>Your ideas. Your AI assistant.</h1>
+        <p>
+            Ask questions, explore ideas, analyze documents and get things
+            done with your agentic AI assistant.
+        </p>
+    </div>
+
+    <div class="cards">
+
+        <button class="card" data-prompt="Help me brainstorm ideas for an AI project.">
+            ✧
+            <b>Creativity</b>
+            <span>Brainstorm ideas for projects and products.</span>
+        </button>
+
+        <button class="card" data-prompt="Explain a Python programming concept with examples.">
+            ⌘
+            <b>Programming</b>
+            <span>Generate, debug and explain code step by step.</span>
+        </button>
+
+        <button class="card" data-prompt="Teach me a technical topic with examples.">
+            ◈
+            <b>Learning</b>
+            <span>Understand concepts step by step.</span>
+        </button>
+
+        <button class="card" data-prompt="Help me organize my tasks for today.">
+            ◷
+            <b>Productivity</b>
+            <span>Organize tasks and priorities.</span>
+        </button>
+
+        <button class="card" data-prompt="Help me write a professional email.">
+            ✎
+            <b>Writing</b>
+            <span>Create polished written content.</span>
+        </button>
+
+        <button class="card" data-prompt="Research artificial intelligence trends.">
+            ⌕
+            <b>Research</b>
+            <span>Explore and analyze information.</span>
+        </button>
+
+    </div>
+</div>
+
+</section>
+
+<!-- COMPOSER -->
+<section class="composer">
+
+    <div class="notice" id="notice"></div>
+
+    <textarea
+        id="message"
+        rows="2"
+        placeholder="Message your AI assistant..."
+    ></textarea>
+
+    <div class="bottom">
+
+        <div class="controls">
+
+            <button class="attach" id="upload">＋</button>
+
+            <input
+                type="file"
+                id="file"
+                accept=".pdf,.docx,.txt,.md,.py,.csv"
+                hidden
+            >
+
+            <!-- GEMINI MODEL SELECTOR -->
+            <select class="model" id="modelSelect" title="Select Gemini model">
+
+                <option value="gemini-3.5-flash-lite" selected>
+                    Gemini 3.5 Flash-Lite · Fast
+                </option>
+
+                <option value="gemini-3.1-flash-lite">
+                    Gemini 3.1 Flash-Lite · Fast
+                </option>
+
+                <option value="gemini-3.6-flash">
+                    Gemini 3.6 Flash · Balanced
+                </option>
+
+                <option value="gemini-3.8-flash">
+                    Gemini 3.8 Flash · Advanced
+                </option>
+
+            </select>
+
+        </div>
+
+        <button class="send" id="send">➤</button>
+
+    </div>
+</section>
+
+</main>
+
+<!-- RIGHT TOOLS PANEL -->
+<aside class="tools" id="tools">
+
+    <div class="toolhead">
+        <span>Agent workspace</span>
+        <button class="iconbtn" id="closeTools">×</button>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" id="toolsTab">Tools</button>
+        <button class="tab" id="filesTab">Files</button>
+    </div>
+
+    <div id="toolsView">
+
+        <div class="section">Available agent tools</div>
+
+        <div class="toolitem">
+            <div class="toolicon">⌗</div>
+            <div>
+                <div class="toolname">Calculator</div>
+                <div class="desc">Perform mathematical calculations.</div>
+            </div>
+        </div>
+
+        <div class="toolitem">
+            <div class="toolicon">⌕</div>
+            <div>
+                <div class="toolname">Web search</div>
+                <div class="desc">Search the web using Tavily.</div>
+            </div>
+        </div>
+
+        <div class="toolitem">
+            <div class="toolicon">▤</div>
+            <div>
+                <div class="toolname">Document retrieval</div>
+                <div class="desc">Retrieve information from uploaded documents.</div>
+            </div>
+        </div>
+
+        <div class="toolitem">
+            <div class="toolicon">◉</div>
+            <div>
+                <div class="toolname">Long-term memory</div>
+                <div class="desc">Save and recall information across conversations.</div>
+            </div>
+        </div>
+
+        <div class="section" style="margin-top:20px">Model</div>
+
+        <div class="desc">
+            The selected Gemini model powers the agent and its tool-calling workflow.
+        </div>
+
+    </div>
+
+    <div class="filesview" id="filesView">
+        <div class="section">Uploaded documents</div>
+        <div id="uploadedFiles" class="desc">
+            No files uploaded in this session.
+        </div>
+    </div>
+
+</aside>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const chat = $("chat");
+const message = $("message");
+const model = $("modelSelect");
+
+let threadId = crypto.randomUUID();
+let busy = false;
+
+// Prevent HTML injection in displayed messages.
+function esc(s) {
+    return String(s ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[c]));
+}
+
+// Add chat message.
+function add(role, text) {
+    $("welcome")?.remove();
+
+    let n = document.createElement("div");
+    n.className = "message " + role;
+
+    n.innerHTML = `
+        <div class="bubbleicon">${role === "user" ? "Y" : "✦"}</div>
+        <div>
+            <div class="role">${role === "user" ? "You" : "Agentic AI"}</div>
+            <div class="content">${esc(text)}</div>
+        </div>
+    `;
+
+    chat.append(n);
+    chat.scrollTop = chat.scrollHeight;
+
+    return n.querySelector(".content");
+}
+
+// Welcome suggestions.
+function bindCards() {
+    document.querySelectorAll(".card").forEach(b => {
+        b.onclick = () => {
+            message.value = b.dataset.prompt;
+            message.focus();
+        };
+    });
+}
+
+// Display welcome screen.
+function welcome() {
+    chat.innerHTML = `
+        <div class="welcome" id="welcome">
+
+            <div class="hero">
+                <div class="heroicon">✦</div>
+                <h1>Your ideas. Your AI assistant.</h1>
+                <p>Ask questions, explore ideas, analyze documents and get things done.</p>
+            </div>
+
+            <div class="cards">
+
+                <button class="card" data-prompt="Help me brainstorm ideas for an AI project.">
+                    ✧<b>Creativity</b><span>Brainstorm ideas for projects.</span>
+                </button>
+
+                <button class="card" data-prompt="Explain a Python concept with examples.">
+                    ⌘<b>Programming</b><span>Generate, debug and explain code.</span>
+                </button>
+
+                <button class="card" data-prompt="Teach me a technical topic.">
+                    ◈<b>Learning</b><span>Understand concepts step by step.</span>
+                </button>
+
+                <button class="card" data-prompt="Help me organize my tasks.">
+                    ◷<b>Productivity</b><span>Organize tasks and priorities.</span>
+                </button>
+
+                <button class="card" data-prompt="Help me write a professional email.">
+                    ✎<b>Writing</b><span>Create polished content.</span>
+                </button>
+
+                <button class="card" data-prompt="Research artificial intelligence trends.">
+                    ⌕<b>Research</b><span>Explore and analyze information.</span>
+                </button>
+
+            </div>
+        </div>
+    `;
+
+    bindCards();
+}
+
+// Load conversation history.
+async function loadConversations() {
+    try {
+        let r = await fetch("/conversations");
+
+        if (!r.ok) throw Error();
+
+        let d = await r.json();
+
+        let a = Array.isArray(d)
+            ? d
+            : (d.conversations || d.items || []);
+
+        $("history").innerHTML = "";
+
+        if (!a.length) {
+            $("history").textContent = "No conversations yet.";
+            return;
+        }
+
+        a.forEach(x => {
+
+            let id = x.thread_id || x.id || x.conversation_id;
+
+            if (!id) return;
+
+            let e = document.createElement("div");
+            e.className = "conv";
+
+            let title = x.title || x.name || x.preview || "Conversation";
+
+            e.innerHTML = `
+                <span>◷</span>
+                <span>${esc(title)}</span>
+            `;
+
+            e.onclick = () => loadHistory(id);
+
+            $("history").append(e);
+        });
+
+    } catch (e) {
+        $("history").textContent = "Unable to load conversations.";
+        console.error(e);
+    }
+}
+
+// Load selected conversation.
+async function loadHistory(id) {
+
+    threadId = id;
+    chat.innerHTML = "";
+
+    try {
+
+        let r = await fetch("/history/" + encodeURIComponent(id));
+
+        if (!r.ok) throw Error();
+
+        let d = await r.json();
+
+        let a = Array.isArray(d)
+            ? d
+            : (d.messages || d.history || []);
+
+        if (!a.length) {
+            welcome();
+        } else {
+            a.forEach(m => {
+                add(
+                    m.role === "user" || m.type === "human"
+                        ? "user"
+                        : "assistant",
+                    m.content || m.message || ""
+                );
+            });
+        }
+
+    } catch (e) {
+        welcome();
+    }
+
+    loadConversations();
+}
+
+// Send and stream message.
+async function sendMessage() {
+
+    let text = message.value.trim();
+
+    if (!text || busy) return;
+
+    busy = true;
+    $("send").disabled = true;
+
+    add("user", text);
+    message.value = "";
+
+    let out = add("assistant", "Thinking...");
+
+    try {
+
+        let r = await fetch("/chat/stream", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                message: text,
+                thread_id: threadId,
+                model: model.value
+            })
+
+        });
+
+        if (!r.ok) {
+            throw Error(await r.text() || "Chat request failed");
+        }
+
+        if (!r.body) {
+            throw Error("Streaming is unavailable");
+        }
+
+        out.textContent = "";
+
+        let reader = r.body.getReader();
+        let decoder = new TextDecoder();
+        let buf = "";
+
+        while (true) {
+
+            let { value, done } = await reader.read();
+
+            if (done) break;
+
+            buf += decoder.decode(value, { stream: true });
+
+            let events = buf.split("\n\n");
+
+            buf = events.pop() || "";
+
+            for (let ev of events) {
+
+                let line = ev.split("\n").find(
+                    x => x.startsWith("data:")
+                );
+
+                if (!line) continue;
+
+                let p;
+
+                try {
+                    p = JSON.parse(line.slice(5).trim());
+                } catch {
+                    continue;
+                }
+
+                if (p.token) {
+                    out.textContent += p.token;
+                }
+
+                if (p.error) {
+                    throw Error(p.error);
+                }
+
+                chat.scrollTop = chat.scrollHeight;
+            }
+        }
+
+        if (!out.textContent.trim()) {
+            out.textContent = "The model returned an empty response.";
+        }
+
+        await loadConversations();
+
+    } catch (e) {
+
+        out.textContent = "Error: " + e.message;
+        console.error(e);
+
+    } finally {
+
+        busy = false;
+        $("send").disabled = false;
+        message.focus();
+
+    }
+}
+
+// Upload document for RAG.
+async function uploadFile(f) {
+
+    if (!f) return;
+
+    let fd = new FormData();
+
+    fd.append("file", f);
+    fd.append("thread_id", threadId);
+
+    $("notice").textContent = "Uploading " + f.name + "...";
+    $("notice").classList.add("show");
+
+    try {
+
+        let r = await fetch("/upload", {
+            method: "POST",
+            body: fd
+        });
+
+        let d = await r.json().catch(() => ({}));
+
+        if (!r.ok) {
+            throw Error(d.detail || d.error || "Upload failed");
+        }
+
+        $("notice").textContent =
+            d.message || f.name + " uploaded successfully.";
+
+        if ($("uploadedFiles").textContent.includes("No files")) {
+            $("uploadedFiles").textContent = "";
+        }
+
+        let x = document.createElement("div");
+        x.className = "fileentry";
+        x.textContent = "▤ " + f.name;
+
+        $("uploadedFiles").append(x);
+
+    } catch (e) {
+
+        $("notice").textContent = "Upload error: " + e.message;
+
+    }
+
+    $("file").value = "";
+}
+
+// Start new conversation.
+function newChat() {
+
+    threadId = crypto.randomUUID();
+
+    welcome();
+    loadConversations();
+    message.focus();
+
+}
+
+// Event listeners.
+["newChat", "newNav", "topNew"].forEach(id => {
+    $(id).onclick = newChat;
+});
+
+$("refresh").onclick = loadConversations;
+
+$("send").onclick = sendMessage;
+
+message.addEventListener("keydown", e => {
+
+    if (e.key === "Enter" && !e.shiftKey) {
+
+        e.preventDefault();
+        sendMessage();
+
+    }
+
+});
+
+$("upload").onclick = () => $("file").click();
+
+$("file").onchange = () => uploadFile($("file").files[0]);
+
+// Tools and files tabs.
+$("toolsTab").onclick = () => {
+
+    $("toolsTab").classList.add("active");
+    $("filesTab").classList.remove("active");
+
+    $("toolsView").classList.remove("hidden");
+    $("filesView").classList.remove("show");
+
+};
+
+$("filesTab").onclick = () => {
+
+    $("filesTab").classList.add("active");
+    $("toolsTab").classList.remove("active");
+
+    $("toolsView").classList.add("hidden");
+    $("filesView").classList.add("show");
+
+};
+
+$("closeTools").onclick = () => {
+    $("tools").classList.add("panelhidden");
+};
+
+$("showTools").onclick = () => {
+    $("tools").classList.remove("panelhidden");
+};
+
+// Initialize frontend.
+bindCards();
+loadConversations();
+
+</script>
+</body>
+</html>
