@@ -32,7 +32,7 @@ services:
   chatbot-test:
     profiles:
       - test
-    image: shantanu36/agentic-ai-chatbot:health-test
+    image: shantanu36/agentic-ai-chatbot:sha-f7d9cb935959238d1b672e7eb0c85d8aa7f9ebf3
     container_name: agentic-ai-chatbot-compose-test
 
     ports:
