@@ -39,6 +39,13 @@ app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
+@app.get("/health")
+async def health():
+    return {
+        "status": "healthy",
+        "application": "agentic-ai-chatbot"
+    }
+
 Path("uploads").mkdir(exist_ok=True)
 Path("data").mkdir(exist_ok=True)
 
